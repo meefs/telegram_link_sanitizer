@@ -12,8 +12,8 @@ BASE_URL = f'https://api.telegram.org/bot{TOKEN}'
 OFFSET_FILE = 'offsets.csv'
 
 # Regex patterns for URL and message modification
-URL_PATTERN = re.compile(r'(?:\?igsh=|\?si=|\?t=|\&igsh=|\&si=|\&t=)[a-z0-9_-]+', re.IGNORECASE)
-URL_PATTERN_2 = re.compile(r'(https?://[^\s]+)')
+URL_PATTERN = re.compile(r'(?:\?|\&)(?:igsh=|si=|t=)[a-z0-9_-]+', re.IGNORECASE)
+URL_PATTERN_2 = re.compile(r'(https?://[^\s]+)', re.IGNORECASE)
 
 def load_offsets():
     logging.info("Loading offsets")
@@ -78,15 +78,14 @@ def process_updates():
                         continue
                     
                     offset = update['update_id'] + 1
-    
                     text = message.get('text', '')
                     updated_text = URL_PATTERN.sub('', text)
 
-                    match = URL_PATTERN_2.search(updated_text)
-                    new_message = "Let me fix that for you: " + match.group(1) if match else None
-    
                     if updated_text != text:
                         logging.info("Found updated text")
+                        logging.info("Updating message")
+                        match = URL_PATTERN_2.search(updated_text)
+                        new_message = "Let me fix that for you: " + match.group(1) if match else None
                         send_message(chat_id, new_message, message['message_id'])
 
                     logging.info("Updating offset to " + str(offset))
