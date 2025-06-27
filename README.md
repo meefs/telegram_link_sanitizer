@@ -1,7 +1,7 @@
 ## Telegram Link Sanitizer 1.0
 
 ### Overview
-I got tired of the stupid params that companies are putting in links. I wrote this scrappy script to take care of the issue on Telegram. It's not optimized, lacks a lot of detection and correction, but I don't car. It addresses my pet peeves as-is.
+I got tired of the tracking params that companies have begin adding to links. I wrote this scrappy script to take care of the issue on Telegram. It's not optimized, lacks some input validation and error correction, but it works well enough, addressing my pet peeve.
 
 ### Requirements
 - Python 3.x
