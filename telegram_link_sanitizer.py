@@ -42,7 +42,7 @@ def load_offset_and_groups():
                     sys.exit(1)
 
     except Exception as e:
-        logging.error(f"Exception while loading offsets and groups: {e}")
+        logging.error(f"Exception while loading offset and groups: {e}")
 
     return offset, groups
 
@@ -78,7 +78,7 @@ def send_message(chat_id, text, reply_to_message_id):
         pass
 
 def process_updates():
-    logging.info("Running ...")
+    logging.info("Initializing")
 
     try:
         while True:
