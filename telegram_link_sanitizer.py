@@ -4,6 +4,7 @@ import json
 import os
 import logging
 import time
+import sys
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -21,7 +22,7 @@ def load_offset_and_groups():
 
     if not os.path.exists(CONFIG_FILE):
         logging.error(f"Config file {CONFIG_FILE} not found.")
-        exit(1)
+        sys.exit(1)
 
     try:
         with open(CONFIG_FILE, 'r') as f:
@@ -38,7 +39,7 @@ def load_offset_and_groups():
                     groups = data['groups']
                 else:
                     logging.error(f"Invalid groups format: {data['groups']}, no default applied.")
-                    exit(1)
+                    sys.exit(1)
 
     except Exception as e:
         logging.error(f"Exception while loading offsets and groups: {e}")
@@ -116,3 +117,6 @@ def process_updates():
 if __name__ == '__main__':
     logging.info("Telegram Link Sanitizer 1.0")
     process_updates()
+else:
+    logging.error("This ain't no library, son.")
+    sys.exit(1)
