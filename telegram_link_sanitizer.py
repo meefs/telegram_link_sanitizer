@@ -67,8 +67,9 @@ def process_updates():
     try:
         while True:
             offsets = load_offsets()
-            for entry in offsets:
-                offset = offsets[entry]
+            for group in offsets:
+                offset = offsets[group]
+                logging.info("Checking group [" + str(group) + "], offset: [" + str(offset) + "]")
                 updates = get_updates(offset)
                 for update in updates.get('result', []):
                     message = update.get('message', {})
@@ -76,20 +77,20 @@ def process_updates():
 
                     if str(chat_id) not in offsets:
                         continue
-                    
+
                     offset = update['update_id'] + 1
                     text = message.get('text', '')
                     updated_text = URL_PATTERN.sub('', text)
 
                     if updated_text != text:
                         logging.info("Found updated text")
-                        logging.info("Updating message")
+                        logging.info("Reformatting message")
                         match = URL_PATTERN_2.search(updated_text)
                         new_message = "Let me fix that for you: " + match.group(1) if match else None
                         send_message(chat_id, new_message, message['message_id'])
 
                     logging.info("Updating offset to " + str(offset))
-                    offsets[entry] = offset
+                    offsets[group] = offset
 
             save_offsets(offsets)
             # Sleep whatever arbitrary time tbh, should probably be event-driven rather than polling
