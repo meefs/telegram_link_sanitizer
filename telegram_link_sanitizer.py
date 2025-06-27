@@ -39,10 +39,10 @@ def save_offsets(offsets):
     except Exception as e:
         logging.info("Error saving offsets: " + str(e))
 
-def get_updates(offset=None):
-    logging.info("Checking for new messages at offset " + str(offset))
+def get_updates(offset=None, group):
+    logging.info("Checking [" + str(group) + "] for new messages at offset [" + str(offset) + "]")
     try:
-        params = {'timeout': 5000, 'offset': offset}
+        params = {'timeout': 3000, 'offset': offset}
         response = requests.get(f'{BASE_URL}/getUpdates', params=params)
     except Exception as e:
         logging.info("Error getting updates: " + str(e))
@@ -69,15 +69,17 @@ def process_updates():
             offsets = load_offsets()
             for group in offsets:
                 offset = offsets[group]
-                logging.info("Checking group [" + str(group) + "], offset: [" + str(offset) + "]")
-                updates = get_updates(offset)
+                updates = get_updates(offset, group)
                 for update in updates.get('result', []):
                     message = update.get('message', {})
                     chat_id = message.get('chat', {}).get('id')
-
+                    chat_title = message.get('chat', {}).get('title')
+                    og_user = message.get('from', {}).get('username')
+                    
                     if str(chat_id) not in offsets:
                         continue
 
+                    logging.info("Checking group [" + str(group) + "] " + chat_title + ", offset: [" + str(offset) + "]")
                     offset = update['update_id'] + 1
                     text = message.get('text', '')
                     updated_text = URL_PATTERN.sub('', text)
@@ -86,15 +88,14 @@ def process_updates():
                         logging.info("Found updated text")
                         logging.info("Reformatting message")
                         match = URL_PATTERN_2.search(updated_text)
-                        new_message = "Let me fix that for you: " + match.group(1) if match else None
+                        new_message = "hey, " + og_user + ", lmftfy: " + match.group(1) if match else None
                         send_message(chat_id, new_message, message['message_id'])
 
                     logging.info("Updating offset to " + str(offset))
                     offsets[group] = offset
 
             save_offsets(offsets)
-            # Sleep whatever arbitrary time tbh, should probably be event-driven rather than polling
-            time.sleep(5)
+            time.sleep(3)
     except Exception as e:
         logging.info("Error in main execution: " + str(e))
 
