@@ -74,7 +74,7 @@ def process_updates():
                     message = update.get('message', {})
                     chat_id = message.get('chat', {}).get('id')
 
-                    if chat_id not in offsets:
+                    if str(chat_id) not in offsets:
                         continue
                     
                     offset = update['update_id'] + 1
