@@ -70,7 +70,8 @@ def send_message(chat_id, text, reply_to_message_id):
         params = {
             'chat_id': chat_id,
             'text': text,
-            'reply_to_message_id': reply_to_message_id
+            'reply_to_message_id': reply_to_message_id,
+            'disable_web_page_preview': true
         }
         requests.get(f'{BASE_URL}/sendMessage', params=params)
     except Exception as e:
