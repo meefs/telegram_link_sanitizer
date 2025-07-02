@@ -13,7 +13,7 @@ BASE_URL = f'https://api.telegram.org/bot{TOKEN}'
 CONFIG_FILE = 'config.json'
 
 # Regex pattern for URL modification
-URL_PATTERN = re.compile(r'(?:\?|\&)(?:igsh=|si=|t=)[a-z0-9_-]+', re.IGNORECASE)
+URL_PATTERN = re.compile(r'(?:\?|\&)(?:igsh=|si=|t=|mibextid=)[a-z0-9_-]+', re.IGNORECASE)
 URL_PATTERN_2 = re.compile(r'(https?://[^\s]+)', re.IGNORECASE)
 
 def load_offset_and_groups():
